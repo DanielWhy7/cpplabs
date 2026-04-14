@@ -1,5 +1,2 @@
-# Lab 1: Input-Output
+# Lab 1: Practice 2
 
-cmake -G Ninja -B build
-
-cmake --build build
