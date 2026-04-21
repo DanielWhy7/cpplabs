@@ -1,15 +1,44 @@
 import std;
 
-struct Fraction {
-  int numerator = 0;
-  int denominator = 1;
+class Fraction {
+  int _a,_b;//a is numerator //b is denominator
+
+  Fraction(){
+    _a=0:_b=1;
+  }
+
+  Fraction(int k){
+    _a=k;_b=1;
+  }
+
+  Fraction(int k,int j){
+    _a=k;_b=j;
+  }
+  public:
+  int num()return _a
+  int den()return _b
+  
+  int set_num(int k){_a=k;return 0};
+  int set_den(int k){
+    if(k!=0){
+      _b=k;
+      return 0;
+    }
+    else{
+      std::cerr<<"\n"<<"\033[31mError: Denominator cannot be zero!\033[0m"<<std::endl;
+      return 1;
+    }
+  }
+  int rdc(){
+    int g=gcd(_a,_b);return {_a/g,_b/g};
+  }
 };
 
 int gcd(int a,int b){//Greatest Common Divisor
   a = std::abs(a);
   b = std::abs(b);
   if (b==0){return a;}//a is numerator //b is denominator
-  else return gcd(b,a%b);
+else return gcd(b,a%b);
 }
 
 Fraction rdc(int a,int b){
