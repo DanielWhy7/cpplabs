@@ -32,24 +32,41 @@ class Fraction {
     return 1;
   }
 
+  float operator()() const {return _a/static_cast<float>(_b);}
   Fraction& operator+=(const Fraction& other) {
     _a = _a * other._b + other._a * _b;
     _b = _b * other._b;
     rdc();
     return *this;
   }
+  Fraction& operator-=(const Fraction& other) {
+    _a = _a * other._b - other._a * _b;
+    _b = _b * other._b;
+    rdc();
+    return *this;
+  }
+  Fraction& operator*=(const Fraction& other) {
+    _a = _a * other._a;
+    _b = _b * other._b;
+    rdc();
+    return *this;
+  }
+  Fraction& operator++() {
+    _a += _b;
+    rdc();
+    return *this;
+  }
+  Fraction operator++(int) {
+    Fraction temp = *this;
+    _a += _b;
+    rdc();
+    return temp;
+  }
 };
 
-Fraction operator+(Fraction a, const Fraction& b) {
-  return a += b;
-}
-
-//int gcd(int a,int b){//Greatest Common Divisor
-//  a = std::abs(a);
-//  b = std::abs(b);
-//  if (b==0){return a;}//a is numerator //b is denominator
-//  else return gcd(b,a%b);
-//}
+Fraction operator+(Fraction a, const Fraction& b){return a+=b;}
+Fraction operator-(Fraction a, const Fraction& b){return a-=b;}
+Fraction operator*(Fraction a, const Fraction& b){return a*=b;}
 
 int promt_user_set(Fraction& x){
   int n,d;
