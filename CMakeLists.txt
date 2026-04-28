@@ -23,4 +23,9 @@ add_executable(main)
 
 target_compile_features(main PRIVATE cxx_std_23)
 
-target_sources(main PRIVATE src/main.cpp)
+target_sources(main
+  PRIVATE
+    src/main.cpp
+  PRIVATE FILE_SET "modules" TYPE CXX_MODULES FILES
+    src/vector_utils.cppm
+)

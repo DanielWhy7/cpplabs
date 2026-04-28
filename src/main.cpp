@@ -1,4 +1,5 @@
 import std;
+import vector_utils;
 
 void print_line(){
   std::println("--------------------");
@@ -20,28 +21,12 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  int n = 0;
-  std::println("Enter the number of sequence elements: ");
-  std::cin >> n;
-
-  if (n <= 0) {
-    std::println("The number of elements must be greater than 0.");
-    return 1;
-  }
-
-  int sum = 0;
-  int count = 0;
-
-  std::println("Enter {} elements of the sequence:", n);
-  while (count < n) {
-    int x = 0;
-    std::cin >> x;
-    sum += x;
-    count++;
-  }
-
-  std::println("Amount of elements: {}", n);
-  std::println("Sum of elements: {}", sum);
+  std::vector<int> v = input_vector();
+  std::cout << "Count vector: ";
+  std::cout << count_elements_of_vector(v) << std::endl;
+  std::cout << "Input vector: ";
+  show_vector(v);
+  std::cout << std::endl;
 
   return 0;
 }
