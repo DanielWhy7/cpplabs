@@ -1,4 +1,4 @@
-# Practice 5: Operator overload
+# Practice 6: RAII
 
 cmake -G Ninja -B build
 

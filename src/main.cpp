@@ -1,87 +1,165 @@
 import std;
 
-class Fraction {
-  int _a,_b;//a is numerator //b is denominator
+// RAII-обёртка String
+class String {
+private:
+    char* data_ = nullptr;
+    size_t size_ = 0;
 
-  bool check_den(int k)const{
-    if(k!=0) return 0;
-    std::cerr<<"\n"<<"\033[31mError: Denominator cannot be zero!\033[0m"<<std::endl;
-    return 1;
-  }
+public:
+    // 1. Конструктор по умолчанию
+    String() = default;
 
-  int rdc(){
-    int g=std::gcd(_a,_b);_a=_a/g;_b=_b/g;
-    return 0;
-  }
-
-  public:
-  Fraction(const Fraction&) = default;
-  Fraction() : _a(0), _b(1) {}
-  Fraction(int k) : _a(k), _b(1) {}
-  Fraction(int k, int j) : _a(k), _b((j == 0) ? 1 : j) {rdc();}
-
-  int num()const {return _a;}
-  int den()const {return _b;}
-
-  int set_num(int k){_a=k;return rdc();}
-  int set_den(int k){
-    if(check_den(k)){
-      _b=k;
-      return 0;
+    // 2. Конструктор по C‑строке
+    explicit String(const char* s) {
+        if (!s) {
+            return;
+        }
+        size_ = std::strlen(s);
+        data_ = new char[size_ + 1];
+        std::memcpy(data_, s, size_ + 1);
     }
-    return 1;
-  }
 
-  float operator()() const {return _a/static_cast<float>(_b);}
-  Fraction& operator+=(const Fraction& other) {
-    _a = _a * other._b + other._a * _b;
-    _b = _b * other._b;
-    rdc();
-    return *this;
-  }
-  Fraction& operator-=(const Fraction& other) {
-    _a = _a * other._b - other._a * _b;
-    _b = _b * other._b;
-    rdc();
-    return *this;
-  }
-  Fraction& operator*=(const Fraction& other) {
-    _a = _a * other._a;
-    _b = _b * other._b;
-    rdc();
-    return *this;
-  }
-  Fraction& operator++() {
-    _a += _b;
-    rdc();
-    return *this;
-  }
-  Fraction operator++(int) {
-    Fraction temp = *this;
-    _a += _b;
-    rdc();
-    return temp;
-  }
+    // 3. Деструктор
+    ~String() { delete[] data_; }
+
+    // 4. Copy конструктор
+    String(const String& other) : size_(other.size_) {
+        if (size_ > 0) {
+            data_ = new char[size_ + 1];
+            std::memcpy(data_, other.data_, size_ + 1);
+        }
+    }
+
+    // 5. Copy assignment
+    String& operator=(const String& other) {
+        if (this != &other) {
+            String tmp{other};
+            swap(tmp);
+        }
+        return *this;
+    }
+
+    // 6. Move конструктор
+    String(String&& other) noexcept : data_(other.data_), size_(other.size_) {
+        other.data_ = nullptr;
+        other.size_ = 0;
+    }
+
+    // 7. Move assignment
+    String& operator=(String&& other) noexcept {
+        if (this != &other) {
+            delete[] data_;
+            data_ = other.data_;
+            size_ = other.size_;
+            other.data_ = nullptr;
+            other.size_ = 0;
+        }
+        return *this;
+    }
+
+    // 8. Метод для получения размера строки
+    size_t size() const { return size_; }
+
+    // 9. Операторы [] для доступа к символам
+    char& operator[](size_t i) { return data_[i]; }
+    const char& operator[](size_t i) const { return data_[i]; }
+
+    // Для C‑строки (в случае необходимости)
+    const char* c_str() const { return data_ ? data_ : ""; }
+
+private:
+    void swap(String& other) noexcept {
+        std::swap(data_, other.data_);
+        std::swap(size_, other.size_);
+    }
 };
 
-Fraction operator+(Fraction a, const Fraction& b){return a+=b;}
-Fraction operator-(Fraction a, const Fraction& b){return a-=b;}
-Fraction operator*(Fraction a, const Fraction& b){return a*=b;}
+// std::formatter специализация для String
+template<>
+struct std::formatter<String> : std::formatter<std::string_view> {
+    auto format(const String& s, auto& ctx) const {
+        std::string_view sv{s.c_str(), s.size()};
+        return std::formatter<std::string_view>::format(sv, ctx);
+    }
+};
 
-int promt_user_set(Fraction& x){
-  int n,d;
-  std::cout << "Enter a numerator of the first number: ";
-  std::cin >> n;
-  std::cout << "Enter a denominator of the first number: ";
-  std::cin >> d;
-  x=Fraction(n,d);
-  return 0;
-}
+// StringBuilder — аналог std::stringstream
+class StringBuilder {
+private:
+    std::string buffer_;
 
+public:
+    // 1. Конструктор по умолчанию
+    StringBuilder() = default;
+
+    // 2. Правило ноля (все действия делегируются std::string)
+
+    // 3. Метод резервирования памяти
+    void reserve(size_t size) { buffer_.reserve(size); }
+
+    // 4. Перегрузки append
+    StringBuilder& append(const std::string& s) {
+        buffer_.append(s);
+        return *this;
+    }
+
+    StringBuilder& append(int value) {
+        buffer_.append(std::to_string(value));
+        return *this;
+    }
+
+    StringBuilder& append(float value) {
+        buffer_.append(std::to_string(value));
+        return *this;
+    }
+
+    // 5. &&-перегрузка build (перемещает buffer)
+    String build() && {
+        return String{buffer_.c_str()};
+    }
+
+    // 6. &-перегрузка build (копирует buffer)
+    String build() const& {
+        return String{buffer_.c_str()};
+    }
+};
+
+// Пример демонстрации
 int main() {
-  Fraction a;Fraction b;promt_user_set(a);promt_user_set(b);
+    std::cout << "=== RAII String demo ===\n";
 
-  Fraction result = a+b;
-  std::cout << "\033[1;32mResult\033[0m:" << result.num() << "/" << result.den() << "\n";
-  return 0;
+    // String — конструктор по умолчанию и по C‑строке
+    String s1;
+    String s2{"Hello, RAII!"};
+
+    std::cout << std::format("s2: '{}', size: {}\n", s2, s2.size());
+
+    // Копирующая и перемещающая семантика
+    String s3 = s2;
+    String s4 = std::move(s2);
+
+    std::cout << std::format("s3 (copy): '{}'\n", s3);
+    std::cout << std::format("s4 (move): '{}'\n", s4);
+
+    // StringBuilder и append
+    std::cout << "\n=== StringBuilder demo ===\n";
+
+    StringBuilder sb;
+    sb.reserve(100);
+
+    sb.append("The answer is: ");
+    sb.append(42);
+    sb.append(", and pi ≈ ");
+    sb.append(3.1415f);
+
+    // lvalue build (copy)
+    String result1 = sb.build();
+    std::cout << std::format("lvalue build: '{}'\n", result1);
+
+    // rvalue build (move)
+    String result2 = StringBuilder{}.append("Fast move!").build();
+    std::cout << std::format("rvalue build: '{}'\n", result2);
+
+    return 0;
 }
