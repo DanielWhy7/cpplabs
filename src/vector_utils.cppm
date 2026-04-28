@@ -33,12 +33,6 @@ export std::vector<int> input_vector(){
   return v;
 }
 
-export int count_elements_of_vector(const std::vector<int>& v){
-  int count=0;
-  for (int x : v)count++;
-  return count;
-}
-
 export int sum_elements_of_vector(const std::vector<int>& v){
   int sum=0;
   for (int x : v) {
