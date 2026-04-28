@@ -1,4 +1,4 @@
-# Lab 2: Vector
+# Lab 3: Class development
 
 cmake -G Ninja -B build
 
