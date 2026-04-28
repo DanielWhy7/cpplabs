@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
   std::vector<int> v = input_vector();
   std::cout << "Count vector: ";
-  std::cout << count_elements_of_vector(v) << std::endl;
+  std::cout << sum_elements_of_vector(v) << std::endl;
   std::cout << "Input vector: ";
   show_vector(v);
   std::cout << std::endl;
