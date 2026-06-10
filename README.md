@@ -1,4 +1,4 @@
-# Lab 4: Developing a class hierarchy
+# Lab 5: Sets and Dictionaries
 
 cmake -G Ninja -B build -Wno-dev
 

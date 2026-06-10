@@ -1,181 +1,79 @@
 import std;
-import account;
+import text_analyzer;
 
-void line(){
+void print_line() {
   std::println("--------------------");
 }
 
-void print_menu(const std::vector<std::shared_ptr<Account>>& accounts) {
-  std::cout << "Accounts: [";
-  for (std::size_t i = 0; i < accounts.size(); ++i) {
-    if (i > 0) std::cout << "; ";
-    std::cout << accounts[i]->get_owner_name() << ": " << accounts[i]->get_balance() << " robux.";
-  }
-  std::cout << "]\n";
-  std::cout << "[1] Insert a new account\n";
-  std::cout << "[2] Delete account\n";
-  std::cout << "[3] Display all accounts\n";
-  std::cout << "[4] Process monthly interest for all accounts\n";
-  std::cout << "[5] Find account with minimum balance\n";
-  std::cout << "[6] Find account with maximum balance\n";
-  std::cout << "[7] Exit\n";
-}
-
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc > 2) {
     std::println("Usage: {} <about>", argv[0]);
     return 1;
   }
 
-  if (argc == 2 && std::strcmp(argv[1], "about") == 0){
-    line();
-    std::println("  Lab No.: 4");
+  if (argc == 2 && std::strcmp(argv[1], "about") == 0) {
+    print_line();
+    std::println("   Lab №: 5");
     std::println("  Group: 6114");
     std::println("  Author: Bikmetov Daniel");
-    std::println("  Variant: 1");
-    line();
+    std::println(" Variant: 1");
+    print_line();
     return 0;
   }
 
-  line();
-  std::vector<std::shared_ptr<Account>> accounts;
-  bool running = true;
+  print_line();
 
-  while (running) {
-    print_menu(accounts);
-    std::cout << "\nSelect a menu item: ";
-
-    int choice;
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    switch (choice) {
-      case 1: {
-        std::cout << "Enter the insertion index: ";
-        std::size_t index;
-        std::cin >> index;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        if (index > accounts.size()) {
-          std::cout << "Error: invalid index.\n";
-          break;
-        }
-
-        std::cout << "Select account type:\n";
-        std::cout << "[1] Checking Account\n";
-        std::cout << "[2] Deposit Account\n";
-        std::cout << "[3] Credit Account\n";
-        std::cout << "Choice: ";
-
-        int type;
-        std::cin >> type;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        std::string name;
-        double balance;
-
-        std::cout << "Enter owner's name: ";
-        std::getline(std::cin, name);
-
-        std::cout << "Enter current balance: ";
-        std::cin >> balance;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        std::shared_ptr<Account> new_account;
-
-        switch (type) {
-          case 1: {
-            new_account = std::make_shared<CheckingAccount>(name, balance);
-            break;
-          }
-          case 2: {
-            double rate;
-            std::cout << "Enter annual interest rate (%): ";
-            std::cin >> rate;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            new_account = std::make_shared<DepositAccount>(name, balance, rate);
-            break;
-          }
-          case 3: {
-            double rate;
-            std::cout << "Enter annual interest rate (%): ";
-            std::cin >> rate;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            new_account = std::make_shared<CreditAccount>(name, balance, rate);
-            break;
-          }
-          default: {
-            std::cout << "Error: invalid account type.\n";
-            break;
-          }
-        }
-
-        if (new_account) {
-          accounts.insert(accounts.begin() + index, new_account);
-          std::cout << "Account successfully added.\n";
-        }
-        break;
-      }
-      case 2: {
-        std::cout << "Enter the index of the account to delete: ";
-        std::size_t index;
-        std::cin >> index;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        if (index >= accounts.size()) {
-          std::cout << "Error: invalid index.\n";
-          break;
-        }
-
-        accounts.erase(accounts.begin() + index);
-        std::cout << "Account successfully deleted.\n";
-        break;
-      }
-      case 3: {
-        if (accounts.empty()) {
-          std::cout << "No accounts in the container.\n";
-        } else {
-          std::cout << "\n=== All Accounts ===\n";
-          for (std::size_t i = 0; i < accounts.size(); ++i) {
-            std::cout << "[" << i << "] " << accounts[i]->to_string() << "\n";
-          }
-        }
-        break;
-      }
-      case 4: {
-        process_interest_for_all(accounts);
-        std::cout << "Monthly interest processed for all accounts.\n";
-        break;
-      }
-      case 5: {
-        auto min_account = find_account_with_min_balance(accounts);
-        if (!min_account) {
-          std::cout << "Container is empty. No accounts to search.\n";
-        } else {
-          std::cout << "Account with the minimum balance:\n";
-          std::cout << "- " << min_account->to_string() << "\n";
-        }
-        break;
-      }
-      case 6: {
-        auto max_account = find_account_with_max_balance(accounts);
-        if (!max_account) {
-          std::cout << "Container is empty. No accounts to search.\n";
-        } else {
-          std::cout << "Account with the maximum balance:\n";
-          std::cout << "- " << max_account->to_string() << "\n";
-        }
-        break;
-      }
-      case 7: {
-        std::cout << "Goodbye!\n";
-        running = false;
-        break;
-      }
-      default: std::cout << "Invalid menu item. Try again.\n";
-    }
-    std::cout << "\n";
+  std::string filename = "input.txt";
+  
+  std::vector<std::string> words = load_file(filename);
+  
+  if (words.empty()) {
+    std::println("Error: could not load file or file is empty.");
+    return 1;
   }
+
+  std::unordered_set<std::string> stop_words = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from",
+    "has", "have", "he", "her", "his", "i", "if", "in", "is", "it",
+    "its", "me", "my", "no", "of", "on", "or", "she", "that", "the",
+    "to", "was", "we", "what", "which", "who", "will", "with", "you",
+    "your", "not", "can", "could", "would", "should", "may", "might",
+    "must", "shall", "do", "does", "did", "been", "being", "than",
+    "just", "between", "about", "up", "out", "into", "through", "during",
+    "before", "after", "above", "below", "over", "under", "again",
+    "further", "then", "there", "where", "why", "how", "all", "each",
+    "every", "both", "few", "more", "most", "some", "such", "only",
+    "same", "so", "very", "but"
+  };
+
+  std::println("\nAnalysis of text from file:");
+  std::println("\"{}\"", filename);
+
+  std::println("\nTotal number of words in text: {}.", words.size());
+
+  std::println("\nStop words:");
+  std::cout << "\"";
+  bool first = true;
+  for (const auto& word : stop_words) {
+    if (!first) std::cout << "\" \"";
+    std::cout << word;
+    first = false;
+  }
+  std::println("\"");
+
+  std::size_t unique_count = count_unique_words(words, stop_words);
+  std::println("\nNumber of unique words: {}", unique_count);
+
+  auto [max_frequency, most_frequent] = find_most_frequent_words(words, stop_words);
+  
+  std::println("\nNumber of occurrences of the most popular word: {}", max_frequency);
+
+  std::println("\nMost popular words:");
+  for (const auto& word : most_frequent) {
+    std::println("\"{}\"", word);
+  }
+
+  print_line();
 
   return 0;
 }

@@ -27,5 +27,5 @@ target_sources(main
   PRIVATE
     src/main.cpp
   PRIVATE FILE_SET "modules" TYPE CXX_MODULES FILES
-    src/account.cppm
+    src/text_analysis.cppm
 )
