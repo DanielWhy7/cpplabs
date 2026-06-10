@@ -1,4 +1,4 @@
-# Lab 3: Class development
+# Lab 4: Developing a class hierarchy
 
 cmake -G Ninja -B build -Wno-dev
 
