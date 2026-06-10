@@ -5,7 +5,7 @@ void line(){
   std::println("--------------------");
 }
 
-void print_menu(const std::vector<std::shared_ptr<Account>>& accounts) {
+void print_menu(const std::vector<std::unique_ptr<Account>>& accounts) {
   std::cout << "Accounts: [";
   for (std::size_t i = 0; i < accounts.size(); ++i) {
     if (i > 0) std::cout << "; ";
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   }
 
   line();
-  std::vector<std::shared_ptr<Account>> accounts;
+  std::vector<std::unique_ptr<Account>> accounts;
   bool running = true;
 
   while (running) {
@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
         std::cin >> balance;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        std::shared_ptr<Account> new_account;
-
         switch (type) {
           case 1: {
-            new_account = std::make_shared<CheckingAccount>(name, balance);
+            accounts.insert(accounts.begin() + index, 
+              std::make_unique<CheckingAccount>(name, balance));
+            std::cout << "Account successfully added.\n";
             break;
           }
           case 2: {
@@ -93,7 +93,9 @@ int main(int argc, char *argv[]) {
             std::cout << "Enter annual interest rate (%): ";
             std::cin >> rate;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            new_account = std::make_shared<DepositAccount>(name, balance, rate);
+            accounts.insert(accounts.begin() + index, 
+              std::make_unique<DepositAccount>(name, balance, rate));
+            std::cout << "Account successfully added.\n";
             break;
           }
           case 3: {
@@ -101,18 +103,15 @@ int main(int argc, char *argv[]) {
             std::cout << "Enter annual interest rate (%): ";
             std::cin >> rate;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            new_account = std::make_shared<CreditAccount>(name, balance, rate);
+            accounts.insert(accounts.begin() + index, 
+              std::make_unique<CreditAccount>(name, balance, rate));
+            std::cout << "Account successfully added.\n";
             break;
           }
           default: {
             std::cout << "Error: invalid account type.\n";
             break;
           }
-        }
-
-        if (new_account) {
-          accounts.insert(accounts.begin() + index, new_account);
-          std::cout << "Account successfully added.\n";
         }
         break;
       }
@@ -148,7 +147,7 @@ int main(int argc, char *argv[]) {
         break;
       }
       case 5: {
-        auto min_account = find_account_with_min_balance(accounts);
+        Account* min_account = find_account_with_min_balance(accounts);
         if (!min_account) {
           std::cout << "Container is empty. No accounts to search.\n";
         } else {
@@ -158,7 +157,7 @@ int main(int argc, char *argv[]) {
         break;
       }
       case 6: {
-        auto max_account = find_account_with_max_balance(accounts);
+        Account* max_account = find_account_with_max_balance(accounts);
         if (!max_account) {
           std::cout << "Container is empty. No accounts to search.\n";
         } else {

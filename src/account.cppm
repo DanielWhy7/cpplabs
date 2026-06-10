@@ -29,7 +29,9 @@ export class CheckingAccount : public Account {
   CheckingAccount(const std::string& name, double initial_balance)
     : Account(name, initial_balance) {}
 
-  void process_monthly_interest() override {}
+  void process_monthly_interest() override {
+    // Ничего не происходит для расчётного счёта
+  }
 
   std::string to_string() const override {
     return std::format("Checking Account - Owner: {}, Balance: {:.2f} robux.",
@@ -73,8 +75,11 @@ export class CreditAccount : public Account {
   double get_annual_interest_rate() const { return annual_interest_rate; }
 
   void process_monthly_interest() override {
-    double monthly_rate = annual_interest_rate / 100.0 / 12.0;
-    balance -= std::abs(balance) * monthly_rate;
+    // Проценты списываются только если баланс < 0
+    if (balance < 0) {
+      double monthly_rate = annual_interest_rate / 100.0 / 12.0;
+      balance -= std::abs(balance) * monthly_rate;
+    }
   }
 
   std::string to_string() const override {
@@ -83,44 +88,44 @@ export class CreditAccount : public Account {
   }
 };
 
-export void process_interest_for_all(std::vector<std::shared_ptr<Account>>& accounts) {
+export void process_interest_for_all(std::vector<std::unique_ptr<Account>>& accounts) {
   for (auto& account : accounts) {
     account->process_monthly_interest();
   }
 }
 
-export std::shared_ptr<Account> find_account_with_min_balance(
-    const std::vector<std::shared_ptr<Account>>& accounts) {
+export Account* find_account_with_min_balance(
+    const std::vector<std::unique_ptr<Account>>& accounts) {
   if (accounts.empty()) {
     return nullptr;
   }
 
-  std::shared_ptr<Account> min_account = accounts[0];
+  Account* min_account = accounts[0].get();
   double min_balance = accounts[0]->get_balance();
 
   for (std::size_t i = 1; i < accounts.size(); ++i) {
     if (accounts[i]->get_balance() < min_balance) {
       min_balance = accounts[i]->get_balance();
-      min_account = accounts[i];
+      min_account = accounts[i].get();
     }
   }
 
   return min_account;
 }
 
-export std::shared_ptr<Account> find_account_with_max_balance(
-    const std::vector<std::shared_ptr<Account>>& accounts) {
+export Account* find_account_with_max_balance(
+    const std::vector<std::unique_ptr<Account>>& accounts) {
   if (accounts.empty()) {
     return nullptr;
   }
 
-  std::shared_ptr<Account> max_account = accounts[0];
+  Account* max_account = accounts[0].get();
   double max_balance = accounts[0]->get_balance();
 
   for (std::size_t i = 1; i < accounts.size(); ++i) {
     if (accounts[i]->get_balance() > max_balance) {
       max_balance = accounts[i]->get_balance();
-      max_account = accounts[i];
+      max_account = accounts[i].get();
     }
   }
 
