@@ -45,14 +45,14 @@ int main(int argc, char *argv[]) {
     print_menu(accounts);
     std::cout << "\nSelect a menu item: ";
 
-    int choice;
+    int choice = 7;
     std::cin >> choice;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     switch (choice) {
       case 1: {
         std::cout << "Enter the insertion index: ";
-        std::size_t index;
+        std::size_t index = 0;
         std::cin >> index;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -67,12 +67,12 @@ int main(int argc, char *argv[]) {
         std::cout << "[3] Credit Account\n";
         std::cout << "Choice: ";
 
-        int type;
+        int type = 1;
         std::cin >> type;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        std::string name;
-        double balance;
+        std::string name = "";
+        double balance = 0.0;
 
         std::cout << "Enter owner's name: ";
         std::getline(std::cin, name);
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
             break;
           }
           case 2: {
-            double rate;
+            double rate = 0.0;
             std::cout << "Enter annual interest rate (%): ";
             std::cin >> rate;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
             break;
           }
           case 3: {
-            double rate;
+            double rate = 0.0;
             std::cout << "Enter annual interest rate (%): ";
             std::cin >> rate;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
       }
       case 2: {
         std::cout << "Enter the index of the account to delete: ";
-        std::size_t index;
+        std::size_t index = 0;
         std::cin >> index;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
