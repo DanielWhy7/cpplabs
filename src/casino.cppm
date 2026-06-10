@@ -53,14 +53,14 @@ export int play_casino_game(int initial_balance) {
     std::cout << "[2] Exit casino\n";
     std::cout << "Select an option: ";
 
-    int choice;
+    int choice = 2;
     std::cin >> choice;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     switch (choice) {
       case 1: {
         std::cout << "Enter your bet: ";
-        int bet;
+        int bet = 0;
         std::cin >> bet;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     print_menu(accounts);
     std::cout << "\nSelect a menu item: ";
 
-    int choice;
+    int choice = 6;//if program fails, it should exit
     std::cin >> choice;
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     switch (choice) {
       case 1: {
         std::cout << "Enter the insertion index: ";
-        std::size_t index;
+        std::size_t index = 0;
         std::cin >> index;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -62,8 +62,9 @@ int main(int argc, char *argv[]) {
           break;
         }
 
-        std::string name;
-        double balance, rate;
+        std::string name = "";
+        double balance = 0.0;
+        double rate = 0.0;
 
         std::cout << "Enter client's name: ";
         std::getline(std::cin, name);
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]) {
       }
       case 2: {
         std::cout << "Enter the index of the element to delete: ";
-        std::size_t index;
+        std::size_t index = 0;
         std::cin >> index;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
