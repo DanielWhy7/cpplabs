@@ -1,6 +1,6 @@
 import std;
 import deposit_account;
-//import casino;
+import casino;
 
 void line(){
   std::println("--------------------");
@@ -52,71 +52,78 @@ int main(int argc, char *argv[]) {
 
     switch (choice) {
       case 1: {
-                std::cout << "Enter the insertion index: ";
-                std::size_t index;
-                std::cin >> index;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Enter the insertion index: ";
+        std::size_t index;
+        std::cin >> index;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                if (index > accounts.size()) {
-                  std::cout << "Error: invalid index.\n";
-                  break;
-                }
+        if (index > accounts.size()) {
+          std::cout << "Error: invalid index.\n";
+          break;
+        }
 
-                std::string name;
-                double balance, rate;
+        std::string name;
+        double balance, rate;
 
-                std::cout << "Enter client's name: ";
-                std::getline(std::cin, name);
+        std::cout << "Enter client's name: ";
+        std::getline(std::cin, name);
 
-                std::cout << "Enter current balance: ";
-                std::cin >> balance;
+        std::cout << "Enter current balance: ";
+        std::cin >> balance;
 
-                std::cout << "Enter annual interest rate (%): ";
-                std::cin >> rate;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Enter annual interest rate (%): ";
+        std::cin >> rate;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                accounts.insert(accounts.begin() + index, DepositAccount(name, balance, rate));
-                std::cout << "Account successfully added.\n";
-                break;
-              }
+        accounts.insert(accounts.begin() + index, DepositAccount(name, balance, rate));
+        std::cout << "Account successfully added.\n";
+        break;
+      }
       case 2: {
-                std::cout << "Enter the index of the element to delete: ";
-                std::size_t index;
-                std::cin >> index;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Enter the index of the element to delete: ";
+        std::size_t index;
+        std::cin >> index;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                if (index >= accounts.size()) {
-                  std::cout << "Error: invalid index.\n";
-                  break;
-                }
+        if (index >= accounts.size()) {
+          std::cout << "Error: invalid index.\n";
+          break;
+        }
 
-                accounts.erase(accounts.begin() + index);
-                std::cout << "Account successfully deleted.\n";
-                break;
-              }
+        accounts.erase(accounts.begin() + index);
+        std::cout << "Account successfully deleted.\n";
+        break;
+      }
       case 3: {
-                accrue_interest_for_all(accounts);
-                std::cout << "Interest accrued on all accounts.\n";
-                break;
-              }
+        accrue_interest_for_all(accounts);
+        std::cout << "Interest accrued on all accounts.\n";
+        break;
+      }
       case 4: {
-                int index = find_account_with_max_balance(accounts);
-                if (index == -1) {
-                  std::cout << "Container is empty. No accounts to search.\n";
-                } else {
-                  std::cout << "Account with the highest current balance:\n";
-                  std::cout << "- Account index in container: " << index << "\n";
-                  std::cout << "- " << accounts[index].to_string() << "\n";
-                }
-                break;
-              }
+        int index = find_account_with_max_balance(accounts);
+        if (index == -1) {
+          std::cout << "Container is empty. No accounts to search.\n";
+        } else {
+          std::cout << "Account with the highest current balance:\n";
+          std::cout << "- Account index in container: " << index << "\n";
+          std::cout << "- " << accounts[index].to_string() << "\n";
+        }
+        break;
+      }
       case 5: {
-                std::cout << "Goodbye!\n";
-                running = false;
-                break;
-              }
-      default:
-              std::cout << "Invalid menu item. Try again.\n";
+        if (!accounts.empty()) {
+          int winnings = play_casino_game(static_cast<int>(accounts[0].get_balance()));
+        } else {
+          std::cout << "Create an account first to play casino!\n";
+        }
+        break;
+      }
+      case 6: {
+        std::cout << "Goodbye!\n";
+        running = false;
+        break;
+      }
+      default: std::cout << "Invalid menu item. Try again.\n";
     }
     std::cout << "\n";
   }
