@@ -21,14 +21,12 @@ endif()
 
 add_executable(main)
 
+find_package(httplib CONFIG REQUIRED)
+target_link_libraries(main PRIVATE httplib::httplib)
+
 target_compile_features(main PRIVATE cxx_std_23)
 
 target_sources(main
   PRIVATE
     src/main.cpp
-  PRIVATE FILE_SET "modules" TYPE CXX_MODULES FILES
-    src/Collections.Base.cppm
-    src/Collections.List.cppm
-    src/Collections.Sets.cppm
-    src/Collections.Specialized.cppm
 )

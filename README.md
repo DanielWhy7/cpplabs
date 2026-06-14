@@ -1,5 +1,5 @@
-# Practice 10: Polymorphism of subtypes (II)
+# Practice 11: Package manager vcpkg
 
-cmake -G Ninja -B build
+cmake -B build -S . -G Ninja -DCMAKE_TOOLCHAIN_FILE="~/vcpkg/scripts/buildsystems/vcpkg.cmake" -Wno-dev
 
 cmake --build build
