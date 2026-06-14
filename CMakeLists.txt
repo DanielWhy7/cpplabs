@@ -19,20 +19,43 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /W4")
 endif()
 
-add_library(counters STATIC)
-target_sources(counters
+add_library(UValue STATIC)
+target_sources(UValue
   PUBLIC
   FILE_SET CXX_MODULES
   FILES
-  src/counters.ixx
-  src/ICounter.cppm
-  src/BoundedCounter.cppm
-  src/CyclicCounter.cppm
-  src/StepCounter.cppm
+  src/utils/UValue.cppm
+)
+
+add_library(api STATIC)
+target_sources(api
+  PUBLIC
+  FILE_SET CXX_MODULES
+  FILES
+  src/api/api.ixx
+  src/api/Serializable.cppm
+  src/api/Serializer.cppm
+)
+target_link_libraries(api PUBLIC UValue)
+
+add_library(serializers STATIC)
+target_sources(serializers
+  PUBLIC
+  FILE_SET CXX_MODULES
+  FILES
+  src/serializers/serializers.ixx
+  src/serializers/BinarySerializer.cppm
+  src/serializers/JsonSerializer.cppm
+  src/serializers/User.cppm
+  src/serializers/XmlSerializer.cppm
+)
+target_link_libraries(serializers PUBLIC
+  api
+  UValue
 )
 
 add_executable(main)
 
 target_compile_features(main PRIVATE cxx_std_23)
 target_sources(main PRIVATE src/main.cpp)
-target_link_libraries(main PRIVATE counters)
+target_link_libraries(main PRIVATE serializers)
