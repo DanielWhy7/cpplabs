@@ -1,9 +1,5 @@
-# Lab 3: Class development
+# Practice 10: Polymorphism of subtypes (II)
 
-cmake -G Ninja -B build -Wno-dev
+cmake -G Ninja -B build
 
 cmake --build build
-
-./build/main
-
-# Вопросы для самопроверки
