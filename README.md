@@ -1,4 +1,4 @@
-# Practice 8: RAII
+# Practice 9: Polymorphism of subtypes (I)
 
 cmake -G Ninja -B build
 

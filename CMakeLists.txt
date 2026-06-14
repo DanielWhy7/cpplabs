@@ -19,8 +19,20 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /W4")
 endif()
 
+add_library(counters STATIC)
+target_sources(counters
+  PUBLIC
+  FILE_SET CXX_MODULES
+  FILES
+  src/counters.ixx
+  src/ICounter.cppm
+  src/BoundedCounter.cppm
+  src/CyclicCounter.cppm
+  src/StepCounter.cppm
+)
+
 add_executable(main)
 
 target_compile_features(main PRIVATE cxx_std_23)
-
 target_sources(main PRIVATE src/main.cpp)
+target_link_libraries(main PRIVATE counters)
