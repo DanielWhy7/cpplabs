@@ -1,132 +1,135 @@
 import std;
-import deposit_account;
-import casino;
+import Collections.List;
+import Collections.Sets;
+import Collections.Specialized;
 
-void line(){
-  std::println("--------------------");
+template <typename T>
+struct RangeIterator {
+  std::shared_ptr<IEnumerator<T>> enumerator;
+  bool has_more;
+
+  bool operator!=(const RangeIterator& other) const {
+    return has_more != other.has_more;
+  }
+
+  void operator++() {
+    has_more = enumerator->move_next();
+  }
+
+  T operator*() const {
+    return enumerator->current();
+  }
+};
+
+template <typename T>
+auto begin(const IEnumerable<T>& collection) {
+  auto enumerator = collection.get_enumerator();
+  bool has_more = enumerator->move_next();
+  return RangeIterator<T>{ enumerator, has_more };
 }
 
-void print_menu(const std::vector<DepositAccount>& accounts) {
-  std::cout << "Deposit accounts: [";
-  for (std::size_t i = 0; i < accounts.size(); ++i) {
-    if (i > 0) std::cout << "; ";
-    std::cout << accounts[i].get_owner_name() << ": " << accounts[i].get_balance() << " robux.";
-  }
-  std::cout << "]\n";
-  std::cout << "[1] Insert a new deposit account\n";
-  std::cout << "[2] Delete deposit account\n";
-  std::cout << "[3] Calculate interest on all accounts\n";
-  std::cout << "[4] Find the account with the highest current balance\n";
-  std::cout << "[5] Play casino\n";
-  std::cout << "[6] Exit\n";
+template <typename T>
+auto end(const IEnumerable<T>&) {
+  return RangeIterator<T>{ nullptr, false };
 }
 
-int main(int argc, char *argv[]) {
-  if (argc > 2) {
-    std::println("Usage: {} <about>", argv[0]);
-    return 1;
+int main() {
+
+  std::print("=== Тестирование List ===\n");
+  List<std::string> list;
+  list.add("Первый");
+  list.add("Второй");
+  list.add("Третий");
+
+  list[1] = "Измененный Второй";
+
+  std::print("Элемент по индексу 1: {}\n", list[1]);
+
+  try {
+    std::print("{}", list[99]);
+  }
+  catch (const InvalidOperationException& ex) {
+    std::print("Ошибка индекса: {}\n", ex.what());
   }
 
-  if (argc == 2 && std::strcmp(argv[1], "about") == 0){
-    line();
-    std::println("  Lab No.: 1");
-    std::println("  Group: 6114");
-    std::println("  Author: Bikmetov Daniel");
-    std::println("  Variant: 1");
-    line();
-    return 0;
+  std::print("Количество элементов в списке: {}\n", list.count());
+
+  std::print("Содержимое списка: ");
+  for (const auto& item : list) {
+    std::print("{} | ", item);
   }
+  std::print("\n\n");
 
-  line();
-  std::vector<DepositAccount> accounts;
-  bool running = true;
 
-  while (running) {
-    print_menu(accounts);
-    std::cout << "\nSelect a menu item: ";
+  std::print("=== Тестирование HashSet ===\n");
+  HashSet<int> set;
+  set.add(10);
+  set.add(20);
+  set.add(10);
 
-    int choice = 6;//if program fails, it should exit
-    std::cin >> choice;
+  std::print("Элементов в множестве (ожидается 2): {}\n", set.count());
+  std::print("Содержит 20? {}\n", set.contains(20) ? "Да" : "Нет");
 
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  std::print("Элементы множества: ");
+  for (int num : set) {
+    std::print("{} ", num);
+  }
+  std::print("\n\n");
 
-    switch (choice) {
-      case 1: {
-        std::cout << "Enter the insertion index: ";
-        std::size_t index = 0;
-        std::cin >> index;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (index > accounts.size()) {
-          std::cout << "Error: invalid index.\n";
-          break;
-        }
+  std::print("=== Тестирование Dictionary ===\n");
+  Dictionary<int, std::string> dict;
+  dict.add({ 1, "One" });
+  dict.add({ 2, "Two" });
+  dict[3] = "Three";
 
-        std::string name = "";
-        double balance = 0.0;
-        double rate = 0.0;
+  std::print("Значение по ключу 3: {}\n", dict[3]);
+  std::print("Элементы словаря:\n");
+  for (auto pair : dict) {
+    std::print(" Ключ: {} -> Значение: {}\n", pair.first, pair.second);
+  }
+  std::print("\n");
 
-        std::cout << "Enter client's name: ";
-        std::getline(std::cin, name);
 
-        std::cout << "Enter current balance: ";
-        std::cin >> balance;
+  std::print("=== Тестирование Stack (LIFO) ===\n");
+  Stack<int> stack;
+  stack.push(100);
+  stack.push(200);
+  stack.push(300);
 
-        std::cout << "Enter annual interest rate (%): ";
-        std::cin >> rate;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  std::print("Обход стека через итератор (с вершины): ");
+  for (int val : stack) {
+    std::print("{} ", val);
+  }
+  std::print("\n");
 
-        accounts.insert(accounts.begin() + index, DepositAccount(name, balance, rate));
-        std::cout << "Account successfully added.\n";
-        break;
-      }
-      case 2: {
-        std::cout << "Enter the index of the element to delete: ";
-        std::size_t index = 0;
-        std::cin >> index;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  std::print("Извлекаем из стека (pop): {}\n", stack.pop());
+  std::print("Текущая вершина (peek): {}\n", stack.peek());
+  std::print("\n");
 
-        if (index >= accounts.size()) {
-          std::cout << "Error: invalid index.\n";
-          break;
-        }
 
-        accounts.erase(accounts.begin() + index);
-        std::cout << "Account successfully deleted.\n";
-        break;
-      }
-      case 3: {
-        accrue_interest_for_all(accounts);
-        std::cout << "Interest accrued on all accounts.\n";
-        break;
-      }
-      case 4: {
-        int index = find_account_with_max_balance(accounts);
-        if (index == -1) {
-          std::cout << "Container is empty. No accounts to search.\n";
-        } else {
-          std::cout << "Account with the highest current balance:\n";
-          std::cout << "- Account index in container: " << index << "\n";
-          std::cout << "- " << accounts[index].to_string() << "\n";
-        }
-        break;
-      }
-      case 5: {
-        if (!accounts.empty()) {
-          int winnings = play_casino_game(static_cast<int>(accounts[0].get_balance()));
-        } else {
-          std::cout << "Create an account first to play casino!\n";
-        }
-        break;
-      }
-      case 6: {
-        std::cout << "Goodbye!\n";
-        running = false;
-        break;
-      }
-      default: std::cout << "Invalid menu item. Try again.\n";
-    }
-    std::cout << "\n";
+  std::print("=== Тестирование Queue (FIFO) ===\n");
+  Queue<std::string> queue;
+  queue.enqueue("Пациент А");
+  queue.enqueue("Пациент Б");
+
+  std::print("Обход очереди через итератор: ");
+  for (const auto& patient : queue) {
+    std::print("{} -> ", patient);
+  }
+  std::print("Конец очереди\n\n");
+
+
+  std::print("=== Тестирование исключений ===\n");
+  try {
+    Stack<double> empty_stack;
+    empty_stack.pop();
+  }
+  catch (const InvalidOperationException& ex) {
+    std::print("Перехвачено ожидаемое исключение: {}\n", ex.what());
+  }
+  catch (const std::exception& ex) {
+    std::print("Другое исключение: {}\n", ex.what());
   }
 
   return 0;
