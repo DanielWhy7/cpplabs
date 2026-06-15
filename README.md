@@ -1,4 +1,4 @@
-# Practice 6: RAII
+# Practice 6: Encapsulation means
 
 cmake -G Ninja -B build
 
