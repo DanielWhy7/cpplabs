@@ -1,4 +1,4 @@
-# Lab 1: Vector
+# Practice 3 : Functions
 
 cmake -G Ninja -B build
 
