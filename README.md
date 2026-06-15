@@ -1,4 +1,4 @@
-# Practice 6: Encapsulation means
+# Practice 7: Undefined Behaviour
 
 cmake -G Ninja -B build
 
