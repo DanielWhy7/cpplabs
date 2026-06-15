@@ -1,6 +1,5 @@
 import std;
 import deposit_account;
-import casino;
 
 void line(){
   std::println("--------------------");
@@ -17,8 +16,7 @@ void print_menu(const std::vector<DepositAccount>& accounts) {
   std::cout << "[2] Delete deposit account\n";
   std::cout << "[3] Calculate interest on all accounts\n";
   std::cout << "[4] Find the account with the highest current balance\n";
-  std::cout << "[5] Play casino\n";
-  std::cout << "[6] Exit\n";
+  std::cout << "[5] Exit\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -112,14 +110,6 @@ int main(int argc, char *argv[]) {
         break;
       }
       case 5: {
-        if (!accounts.empty()) {
-          int winnings = play_casino_game(static_cast<int>(accounts[0].get_balance()));
-        } else {
-          std::cout << "Create an account first to play casino!\n";
-        }
-        break;
-      }
-      case 6: {
         std::cout << "Goodbye!\n";
         running = false;
         break;

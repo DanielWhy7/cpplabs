@@ -28,5 +28,4 @@ target_sources(main
     src/main.cpp
   PRIVATE FILE_SET "modules" TYPE CXX_MODULES FILES
     src/deposit_account.cppm
-    src/casino.cppm
 )
