@@ -30,7 +30,6 @@ export class CheckingAccount : public Account {
     : Account(name, initial_balance) {}
 
   void process_monthly_interest() override {
-    // Ничего не происходит для расчётного счёта
   }
 
   std::string to_string() const override {
@@ -75,8 +74,7 @@ export class CreditAccount : public Account {
   double get_annual_interest_rate() const { return annual_interest_rate; }
 
   void process_monthly_interest() override {
-    // Проценты списываются только если баланс < 0
-    if (balance < 0) {
+    if (balance > 0) {
       double monthly_rate = annual_interest_rate / 100.0 / 12.0;
       balance -= std::abs(balance) * monthly_rate;
     }
